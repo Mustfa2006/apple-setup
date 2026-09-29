@@ -1,0 +1,16 @@
+name: Run iOS Simulator
+on: workflow_dispatch
+
+jobs:
+  run-simulator:
+    runs-on: macos-latest
+    steps:
+      - name: Start Simulator
+        run: |
+          UDID=$(xcrun simctl list devices 'iPhone' | grep -v 'unavailable' | grep -m 1 -oE '[A-F0-9-]{36}')
+          xcrun simctl boot $UDID
+          open -a Simulator
+          echo "Simulator started with UDID: $UDID"
+      
+      - name: Setup tmate session for Remote Access
+        uses: mxschmitt/action-tmate@v3
